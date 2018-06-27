@@ -1,0 +1,347 @@
+{
+	"$schema": "./tmLanguage_schema.json",
+	"name": "Ragel",
+	"scopeName": "source.ragel",
+	"patterns": [
+		{
+			"name": "meta.block.ragel",
+			"begin": "%%{",
+			"captures": {
+				"0": {
+					"name": "punctuation.section.embedded.ragel"
+				}
+			},
+			"end": "}%%",
+			"patterns": [
+				{
+					"include": "#source_ragel"
+				}
+			]
+		},
+		{
+			"name": "support.function.ragel",
+			"begin": "%%",
+			"beginCaptures": {
+				"0": {
+					"name": "punctuation.section.embedded.ragel"
+				}
+			},
+			"end": "$",
+			"patterns": [
+				{
+					"include": "#keywords"
+				}
+			]
+		},
+		{
+			"include": "source.cpp"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.other.ragel",
+					"match": "\\b(machine|alphtype|action|include|access|getkey|variable|import|export|prepush|postpop|write)\\b"
+				}
+			]
+		},
+		"write_components": {
+			"patterns": [
+				{
+					"name": "entity.name.constant",
+					"match": "\\b(data|start|first_final|error|init|exec|exports)\\b"
+				}
+			]
+		},
+		"double_quote_strings": {
+			"patterns": [
+				{
+					"name": "string.quoted.ragel",
+					"begin": "\"",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.ragel"
+						}
+					},
+					"end": "\"",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literal_escaped_char"
+						}
+					]
+				}
+			]
+		},
+		"literals": {
+			"patterns": [
+				{
+					"include": "#double_quote_strings"
+				},
+				{
+					"name": "string.quoted.ragel",
+					"begin": "'",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.ragel"
+						}
+					},
+					"end": "'",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literal_escaped_char"
+						}
+					]
+				},
+				{
+					"name": "string.regexp.ragel",
+					"begin": "\\[",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.ragel"
+						}
+					},
+					"end": "\\]",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literal_escaped_char"
+						}
+					]
+				},
+				{
+					"name": "string.regexp.classic.ragel",
+					"begin": "\\/",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.ragel"
+						}
+					},
+					"end": "\\/",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.end.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literal_escaped_char"
+						}
+					]
+				}
+			]
+		},
+		"literal_escaped_char": {
+			"patterns": [
+				{
+					"match": "\\\\[0abtnvfr+\\-*.'\"\\^\\$\\/\\\\\\[\\](){}|%?]",
+					"name": "constant.character.escape.ragel"
+				},
+				{
+					"match": "\\\\.",
+					"name": "invalid.illegal.not-support.ragel"
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"begin": "#",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.comment.ragel"
+						}
+					},
+					"end": "$\\n?",
+					"name": "comment.line.ragel"
+				}
+			]
+		},
+		"embedded_code": {
+			"patterns": [
+				{
+					"name": "source.cpp",
+					"begin": "\\{",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.cpp"
+						}
+					},
+					"end": "\\}",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.section.embedded.cpp"
+						}
+					},
+					"patterns": [
+						{
+							"include": "source.cpp"
+						}
+					]
+				}
+			]
+		},
+		"machine_define": {
+			"patterns": []
+		},
+		"source_ragel": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"name": "meta.function.action.ragel",
+					"begin": "\\b(action)\\s+(\\w+)\\s+(?={)",
+					"beginCaptures": {
+						"1": {
+							"name": "storage.type.action.ragel"
+						},
+						"2": {
+							"name": "entity.name.function.action.ragel"
+						}
+					},
+					"end": "(?<=})",
+					"patterns": [
+						{
+							"include": "#embedded_code"
+						}
+					]
+				},
+				{
+					"match": "\\b(machine)\\s+(\\w+)\\s*(;)",
+					"captures": {
+						"1": {
+							"name": "storage.type.machine.ragel"
+						},
+						"2": {
+							"name": "entity.name.type.machine.ragel"
+						},
+						"3": {
+							"name": "punctuation.terminator.ragel"
+						}
+					}
+				},
+				{
+					"begin": "\\b(alphtype)\\s+",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.directive.ragel"
+						}
+					},
+					"end": ";",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.terminator.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "source.cpp"
+						}
+					]
+				},
+				{
+					"begin": "\\b(include)\\s+",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.include.ragel"
+						}
+					},
+					"end": ";",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.terminator.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#double_quote_strings"
+						},
+						{
+							"name": "entity.name.type.machine.ragel",
+							"match": "\\b\\w+\\b"
+						}
+					]
+				},
+				{
+					"match": "\\b(access|getkey|variable)\\s+(.*)(;)",
+					"captures": {
+						"1": {
+							"name": "keyword.control.directive.ragel"
+						},
+						"3": {
+							"name": "punctuation.terminator.ragel"
+						}
+					}
+				},
+				{
+					"begin": "\\b(import)\\s+",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.import.ragel"
+						}
+					},
+					"end": ";",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.terminator.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#double_quote_strings"
+						}
+					]
+				},
+				{
+					"name": "keyword.control.export.ragel",
+					"begin": "\\b(export)\\s+",
+					"end": "(?<=;)",
+					"patterns": [
+						{
+							"include": "#machine_define"
+						}
+					]
+				},
+				{
+					"name": "meta.function.stack_hook.ragel",
+					"begin": "\\b(prepush|postpop)\\s+(?={)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.control.ragel"
+						}
+					},
+					"end": "(?<=})",
+					"patterns": [
+						{
+							"include": "#embedded_code"
+						}
+					]
+				},
+				{
+					"match": "write"
+				},
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#literals"
+				}
+			]
+		}
+	}
+}

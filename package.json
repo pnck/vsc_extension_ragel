@@ -1,0 +1,37 @@
+{
+    "name": "ragel",
+    "displayName": "Ragel Support",
+    "description": "Syntax highlighting, snippets support for Ragel State Machine Compiler",
+    "version": "0.0.1",
+    "publisher": "pnck",
+    "engines": {
+        "vscode": "^1.20.0"
+    },
+    "categories": [
+        "Programming Languages",
+        "Snippets"
+    ],
+    "contributes": {
+        "languages": [
+            {
+                "id": "ragel",
+                "aliases": [
+                    "Ragel",
+                    "ragel"
+                ],
+                "extensions": [
+                    ".rl",
+                    ".ragel"
+                ],
+                "configuration": "./language-configuration.json"
+            }
+        ],
+        "grammars": [
+            {
+                "language": "ragel",
+                "scopeName": "source.ragel",
+                "path": "./syntaxes/ragel.tmLanguage.json"
+            }
+        ]
+    }
+}
