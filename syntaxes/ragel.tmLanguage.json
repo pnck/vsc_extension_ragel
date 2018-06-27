@@ -1,5 +1,5 @@
 {
-	"$schema": "./tmLanguage_schema.json",
+	"$schema": "./tmlanguage_schema.json",
 	"name": "Ragel",
 	"scopeName": "source.ragel",
 	"patterns": [
@@ -19,7 +19,6 @@
 			]
 		},
 		{
-			"name": "support.function.ragel",
 			"begin": "%%",
 			"beginCaptures": {
 				"0": {
@@ -29,7 +28,7 @@
 			"end": "$",
 			"patterns": [
 				{
-					"include": "#keywords"
+					"include": "#source_ragel"
 				}
 			]
 		},
@@ -38,6 +37,19 @@
 		}
 	],
 	"repository": {
+		"action_name": {
+			"name": "entity.name.type.action-reference.ragel",	
+			"patterns": [
+				{
+					"match": "([@$>%])\\s*(\\w+)",
+					"captures": {
+						"1": {
+							"name": "punctuation.definition.entity.ragel"
+						}
+					}
+				}
+			]
+		},
 		"keywords": {
 			"patterns": [
 				{
@@ -49,7 +61,7 @@
 		"write_components": {
 			"patterns": [
 				{
-					"name": "entity.name.constant",
+					"name": "constant.language.ragel",
 					"match": "\\b(data|start|first_final|error|init|exec|exports)\\b"
 				}
 			]
@@ -198,11 +210,8 @@
 		"machine_define": {
 			"patterns": []
 		},
-		"source_ragel": {
+		"statements": {
 			"patterns": [
-				{
-					"include": "#comments"
-				},
 				{
 					"name": "meta.function.action.ragel",
 					"begin": "\\b(action)\\s+(\\w+)\\s+(?={)",
@@ -333,7 +342,32 @@
 					]
 				},
 				{
-					"match": "write"
+					"match": "\\b(write)\\s+(\\w+)\\s*(;)",
+					"captures": {
+						"1": {
+							"name": "keyword.control.directive.ragel"
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "#write_components"
+								}
+							]
+						},
+						"3": {
+							"name": "punctuation.terminator.ragel"
+						}
+					}
+				}
+			]
+		},
+		"source_ragel": {
+			"patterns": [
+				{
+					"include": "#comments"
+				},
+				{
+					"include": "#statements"
 				},
 				{
 					"include": "#keywords"
