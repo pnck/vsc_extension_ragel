@@ -1,5 +1,5 @@
 {
-	"$schema": "./tmlanguage_schema.json",
+	"$schema": "./tmLanguage_schema.json",
 	"name": "Ragel",
 	"scopeName": "source.ragel",
 	"patterns": [
@@ -38,15 +38,38 @@
 	],
 	"repository": {
 		"action_name": {
-			"name": "entity.name.type.action-reference.ragel",	
+			"name": "entity.name.type.action-reference.ragel",
 			"patterns": [
 				{
 					"match": "([@$>%])\\s*(\\w+)",
 					"captures": {
 						"1": {
-							"name": "punctuation.definition.entity.ragel"
+							"name": "keyword.operator.transition.ragel"
+						},
+						"2": {
+							"name": "entity.name.function.action.ragel",
+							"patterns": [
+								{
+									"include": "#keywords"
+								}
+							]
 						}
 					}
+				},
+				{
+					"name": "meta.function.action.embeded.ragel",
+					"begin": "([@$>%])\\s*(?={)",
+					"beginCaptures": {
+						"1": {
+							"name": "keyword.operator.transition.ragel"
+						}
+					},
+					"end": "(?<=})",
+					"patterns": [
+						{
+							"include": "#embedded_code"
+						}
+					]
 				}
 			]
 		},
@@ -55,6 +78,14 @@
 				{
 					"name": "keyword.other.ragel",
 					"match": "\\b(machine|alphtype|action|include|access|getkey|variable|import|export|prepush|postpop|write)\\b"
+				},
+				{
+					"name": "keyword.control.ragel",
+					"match": "\\b(when)\\b"
+				},
+				{
+					"name": "constant.language.builtin-actions.ragel",
+					"match": "\\b(eof|err)\\b"
 				}
 			]
 		},
@@ -66,7 +97,7 @@
 				}
 			]
 		},
-		"double_quote_strings": {
+		"normal_quoted_strings": {
 			"patterns": [
 				{
 					"name": "string.quoted.ragel",
@@ -76,10 +107,36 @@
 							"name": "punctuation.definition.string.begin.ragel"
 						}
 					},
-					"end": "\"",
+					"end": "(\")(i?)",
 					"endCaptures": {
-						"0": {
+						"1": {
 							"name": "punctuation.definition.string.end.ragel"
+						},
+						"2": {
+							"name": "keyword.operator.word.ignore-case.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literal_escaped_char"
+						}
+					]
+				},
+				{
+					"name": "string.quoted.ragel",
+					"begin": "'",
+					"beginCaptures": {
+						"0": {
+							"name": "punctuation.definition.string.begin.ragel"
+						}
+					},
+					"end": "(')(i?)",
+					"endCaptures": {
+						"1": {
+							"name": "punctuation.definition.string.end.ragel"
+						},
+						"2": {
+							"name": "keyword.operator.word.ignore-case.ragel"
 						}
 					},
 					"patterns": [
@@ -90,31 +147,8 @@
 				}
 			]
 		},
-		"literals": {
+		"regexp": {
 			"patterns": [
-				{
-					"include": "#double_quote_strings"
-				},
-				{
-					"name": "string.quoted.ragel",
-					"begin": "'",
-					"beginCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.begin.ragel"
-						}
-					},
-					"end": "'",
-					"endCaptures": {
-						"0": {
-							"name": "punctuation.definition.string.end.ragel"
-						}
-					},
-					"patterns": [
-						{
-							"include": "#literal_escaped_char"
-						}
-					]
-				},
 				{
 					"name": "string.regexp.ragel",
 					"begin": "\\[",
@@ -157,10 +191,51 @@
 				}
 			]
 		},
+		"integer_literals": {
+			"patterns": [
+				{
+					"comment": "Floats are decimal or hexadecimal",
+					"match": "\\b([0-9](_*[0-9])*\\.[0-9](_*[0-9])*(_*[eE][-+]?[0-9](_*[0-9])*)?|[0-9](_*[0-9])*_*[eE][-+]?[0-9](_*[0-9])*|0[xX]_*[0-9a-fA-F](_*[0-9a-fA-F])*\\.[0-9a-fA-F](_*[0-9a-fA-F])*(_*[pP][-+]?[0-9](_*[0-9])*)?|0[xX]_*[0-9a-fA-F](_*[0-9a-fA-F])*_*[pP][-+]?[0-9](_*[0-9])*)\\b",
+					"name": "constant.numeric.float.ragel"
+				}
+			]
+		},
+		"float_literals": {
+			"patterns": [
+				{
+					"match": "\\b([0-9](_*[0-9])*|0([xX]_*[0-9a-fA-F](_*[0-9a-fA-F])*|[oO]_*[0-7](_*[0-7])*|[bB]_*[01](_*[01])*))\\b",
+					"name": "constant.numeric.ragel"
+				}
+			]
+		},
+		"numeric_literals": {
+			"comment": "#numeric_literals copied from haskell tmlanguage definition",
+			"patterns": [
+				{
+					"include": "#integer_literals"
+				},
+				{
+					"include": "#float_literals"
+				}
+			]
+		},
+		"literals": {
+			"patterns": [
+				{
+					"include": "#regexp"
+				},
+				{
+					"include": "#normal_quoted_strings"
+				},
+				{
+					"include": "#numeric_literals"
+				}
+			]
+		},
 		"literal_escaped_char": {
 			"patterns": [
 				{
-					"match": "\\\\[0abtnvfr+\\-*.'\"\\^\\$\\/\\\\\\[\\](){}|%?]",
+					"match": "\\\\[0abtnvfr+\\-*.'\"\\^\\$\\/\\\\\\[\\](){}|%?;]",
 					"name": "constant.character.escape.ragel"
 				},
 				{
@@ -186,7 +261,7 @@
 		"embedded_code": {
 			"patterns": [
 				{
-					"name": "source.cpp",
+					"name": "source.cpp.embedded.ragel",
 					"begin": "\\{",
 					"beginCaptures": {
 						"0": {
@@ -201,14 +276,15 @@
 					},
 					"patterns": [
 						{
+							"name": "keyword.control.embedded-code.ragel",
+							"match": "\\b(fhold|fexec|fgoto|fnext|fcall|fret|fbreak)"
+						},
+						{
 							"include": "source.cpp"
 						}
 					]
 				}
 			]
-		},
-		"machine_define": {
-			"patterns": []
 		},
 		"statements": {
 			"patterns": [
@@ -278,7 +354,7 @@
 					},
 					"patterns": [
 						{
-							"include": "#double_quote_strings"
+							"include": "#normal_quoted_strings"
 						},
 						{
 							"name": "entity.name.type.machine.ragel",
@@ -312,7 +388,7 @@
 					},
 					"patterns": [
 						{
-							"include": "#double_quote_strings"
+							"include": "#normal_quoted_strings"
 						}
 					]
 				},
@@ -322,7 +398,7 @@
 					"end": "(?<=;)",
 					"patterns": [
 						{
-							"include": "#machine_define"
+							"include": "#machine_definition"
 						}
 					]
 				},
@@ -361,6 +437,122 @@
 				}
 			]
 		},
+		"operators": {
+			"patterns": [
+				{
+					"match": ",",
+					"name": "punctuation.separator.join.ragel"
+				},
+				{
+					"match": "\\(",
+					"name": "punctuation.section.group.begin.ragel"
+				},
+				{
+					"match": "\\)",
+					"name": "punctuation.section.group.end.ragel"
+				},
+				{
+					"match": "([|&!^-]|--)",
+					"name": "keyword.operator.ragel"
+				},
+				{
+					"match": "(?<!\\.)\\.\\.(?!\\.)",
+					"name": "keyword.operator.range.ragel"
+				},
+				{
+					"match": "(\\.|\\<\\:|\\:\\>\\>?)",
+					"name": "keyword.operator.concatenation.ragel"
+				},
+				{
+					"match": "[>@$%]",
+					"name": "keyword.operator.transition.ragel"
+				},
+				{
+					"name": "keyword.operator.repetition.ragel",
+					"match": "(\\*\\*?|[?+]|\\{\\s*\\d\\s*\\}|\\{\\s*\\d\\s*,\\s*\\}|\\{\\s*,\\s*\\d\\s*\\}|\\{\\s*\\d\\s*,\\s*\\d\\s*\\})"
+				}
+			]
+		},
+		"machine_definition": {
+			"patterns": [
+				{
+					"name": "meta.statement.machine-definition.ragel",
+					"begin": "\\b(\\w+)\\s*(=)",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.type.machine-definition.ragel"
+						},
+						"2": {
+							"name": "keyword.operator.assignment.ragel"
+						}
+					},
+					"end": ";",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.terminator.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literals"
+						},
+						{
+							"include": "#action_name"
+						},
+						{
+							"include": "#keywords"
+						},
+						{
+							"include": "#embedded_code"
+						},
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#comments"
+						}
+					]
+				},
+				{
+					"name": "meta.statement.machine-instantiation.ragel",
+					"begin": "\\b(\\w+)\\s*(:=)",
+					"beginCaptures": {
+						"1": {
+							"name": "entity.name.type.machine-instantiation.ragel"
+						},
+						"2": {
+							"name": "keyword.operator.assignment.instantiation.ragel"
+						}
+					},
+					"end": ";",
+					"endCaptures": {
+						"0": {
+							"name": "punctuation.terminator.ragel"
+						}
+					},
+					"patterns": [
+						{
+							"include": "#literals"
+						},
+						{
+							"include": "#action_name"
+						},
+						{
+							"include": "#keywords"
+						},
+						{
+							"include": "#embedded_code"
+						},
+						{
+							"include": "#operators"
+						},
+						{
+							"include": "#comments"
+						}
+					]
+				}
+			]
+		},
 		"source_ragel": {
 			"patterns": [
 				{
@@ -371,6 +563,9 @@
 				},
 				{
 					"include": "#keywords"
+				},
+				{
+					"include": "#machine_definition"
 				},
 				{
 					"include": "#literals"
