@@ -191,7 +191,7 @@
 				}
 			]
 		},
-		"integer_literals": {
+		"float_literals": {
 			"patterns": [
 				{
 					"comment": "Floats are decimal or hexadecimal",
@@ -200,7 +200,7 @@
 				}
 			]
 		},
-		"float_literals": {
+		"integer_literals": {
 			"patterns": [
 				{
 					"match": "\\b([0-9](_*[0-9])*|0([xX]_*[0-9a-fA-F](_*[0-9a-fA-F])*|[oO]_*[0-7](_*[0-7])*|[bB]_*[01](_*[01])*))\\b",
@@ -367,6 +367,13 @@
 					"captures": {
 						"1": {
 							"name": "keyword.control.directive.ragel"
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "source.cpp"
+								}
+							]
 						},
 						"3": {
 							"name": "punctuation.terminator.ragel"

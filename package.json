@@ -5,7 +5,22 @@
     "version": "0.0.1",
     "publisher": "pnck",
     "engines": {
-        "vscode": "^1.20.0"
+        "vscode": "^0.10.0"
+    },
+    "keywords": [
+		"language",
+		"ragel",
+		"highlight",
+		"syntax"
+    ],
+    "homepage": "https://github.com/pnck/vsc_extension_ragel",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/pnck/vsc_extension_ragel.git"
+	},
+	"bugs": {
+		"url": "https://github.com/pnck/vsc_extension_ragel/issues",
+		"email": "hio131@gmail.com"
     },
     "categories": [
         "Programming Languages",
@@ -23,7 +38,7 @@
                     ".rl",
                     ".ragel"
                 ],
-                "configuration": "./language-configuration.json"
+                "configuration": "./ragel-configuration.json"
             }
         ],
         "grammars": [
@@ -32,6 +47,12 @@
                 "scopeName": "source.ragel",
                 "path": "./syntaxes/ragel.tmLanguage.json"
             }
-        ]
+        ],
+        "snippets": [
+			{
+				"language": "ragel",
+				"path": "./snippets/ragel-snippets.json"
+			}
+		]
     }
 }
